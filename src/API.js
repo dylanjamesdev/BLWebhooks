@@ -4,6 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
+const fetch = require("node-fetch");
+
 // Brute Force Protection
 const slowDown = require("express-slow-down");
 const speedLimiter = slowDown({
@@ -43,6 +45,17 @@ class Client {
             app.use(limiter)
             app.use(speedLimiter)
             console.log(chalk.green(`[BLWEBHOOKS] The Vote Webserver Has Started On Port ${port}.`))
+        }
+         async function check() {
+            var response = await fetch("api-server", {
+                method: "get",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: key,
+                },
+            });
+            var responseData = await response.json();
+            if (!responseData.success) throw new TypeError('argument "key" is not a valid API key');
         }
     }
 }
